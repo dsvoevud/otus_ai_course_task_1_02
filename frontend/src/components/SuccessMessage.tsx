@@ -1,0 +1,23 @@
+import React from 'react';
+import './SuccessMessage.css';
+
+interface SuccessMessageProps {
+  onReset: () => void;
+}
+
+export const SuccessMessage: React.FC<SuccessMessageProps> = ({ onReset }) => {
+  return (
+    <div className="success-container">
+      <div className="success-card">
+        <div className="success-icon">✓</div>
+        <h2 className="success-title">Thank you!</h2>
+        <p className="success-message">
+          Your answers have been submitted successfully.
+        </p>
+        <button onClick={onReset} className="button button-secondary">
+          Submit Another Response
+        </button>
+      </div>
+    </div>
+  );
+};

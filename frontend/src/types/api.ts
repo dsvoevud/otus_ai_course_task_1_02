@@ -1,0 +1,20 @@
+export interface Question {
+  id: string;
+  text: string;
+  type: 'text' | 'multiple_choice';
+  options: string[] | null;
+}
+
+export interface Answer {
+  question_id: string;
+  answer: string;
+}
+
+export interface AnswerSubmission {
+  answers: Answer[];
+}
+
+export interface SubmissionResponse {
+  message: string;
+  count: number;
+}

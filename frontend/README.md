@@ -1,0 +1,40 @@
+# Questionnaire Frontend
+
+React + TypeScript frontend for the Questionnaire API.
+
+## Setup
+
+1. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+2. Start the development server:
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
+
+The frontend will be available at http://localhost:3000
+
+## Features
+
+- Modern React with TypeScript
+- Clean component architecture
+- Form validation
+- Loading states
+- Error handling
+- Responsive design
+- Success message with animation
+- Proxy configuration for API calls
+
+## Development
+
+The app uses Vite proxy to forward API requests to the backend server running on port 8000.

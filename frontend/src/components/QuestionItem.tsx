@@ -1,0 +1,49 @@
+import React from 'react';
+import { Question as QuestionType } from '../types/api';
+import './QuestionItem.css';
+
+interface QuestionItemProps {
+  question: QuestionType;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const QuestionItem: React.FC<QuestionItemProps> = ({
+  question,
+  value,
+  onChange,
+}) => {
+  return (
+    <div className="question-item">
+      <label className="question-label">
+        {question.text}
+        <span className="question-required">*</span>
+      </label>
+
+      {question.type === 'text' ? (
+        <input
+          type="text"
+          className="question-input"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Your answer..."
+          required
+        />
+      ) : (
+        <select
+          className="question-select"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required
+        >
+          <option value="">-- Select an option --</option>
+          {question.options?.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
+  );
+};

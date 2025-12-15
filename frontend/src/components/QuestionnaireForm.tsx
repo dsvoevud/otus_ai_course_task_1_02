@@ -1,0 +1,147 @@
+import React, { useState, useEffect } from 'react';
+import { Question, Answer } from '../types/api';
+import { apiService } from '../services/api';
+import { QuestionItem } from './QuestionItem';
+import { SuccessMessage } from './SuccessMessage';
+import './QuestionnaireForm.css';
+
+export const QuestionnaireForm: React.FC = () => {
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  useEffect(() => {
+    loadQuestions();
+  }, []);
+
+  const loadQuestions = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await apiService.getQuestions();
+      setQuestions(data);
+      
+      // Initialize answers object
+      const initialAnswers: Record<string, string> = {};
+      data.forEach((q) => {
+        initialAnswers[q.id] = '';
+      });
+      setAnswers(initialAnswers);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load questions');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAnswerChange = (questionId: string, value: string) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate all questions are answered
+    const unanswered = questions.filter((q) => !answers[q.id]);
+    if (unanswered.length > 0) {
+      setError('Please answer all questions before submitting.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setError(null);
+
+      const answersList: Answer[] = Object.entries(answers).map(
+        ([question_id, answer]) => ({
+          question_id,
+          answer,
+        })
+      );
+
+      await apiService.submitAnswers({ answers: answersList });
+      setIsSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to submit answers');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleReset = () => {
+    setIsSubmitted(false);
+    setAnswers((prev) => {
+      const reset: Record<string, string> = {};
+      Object.keys(prev).forEach((key) => {
+        reset[key] = '';
+      });
+      return reset;
+    });
+  };
+
+  if (isSubmitted) {
+    return <SuccessMessage onReset={handleReset} />;
+  }
+
+  return (
+    <div className="form-container">
+      <div className="form-card">
+        <div className="form-header">
+          <h1 className="form-title">Questionnaire</h1>
+          <p className="form-description">
+            Please answer all questions below and submit your responses.
+          </p>
+        </div>
+
+        {isLoading && (
+          <div className="loading">
+            <div className="spinner"></div>
+            <p>Loading questions...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="error-message">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
+
+        {!isLoading && questions.length > 0 && (
+          <form onSubmit={handleSubmit} className="form-content">
+            {questions.map((question) => (
+              <QuestionItem
+                key={question.id}
+                question={question}
+                value={answers[question.id]}
+                onChange={(value) => handleAnswerChange(question.id, value)}
+              />
+            ))}
+
+            <div className="form-footer">
+              <button
+                type="submit"
+                className="button button-primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="spinner-small"></span>
+                    Submitting...
+                  </>
+                ) : (
+                  'Submit Answers'
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+};

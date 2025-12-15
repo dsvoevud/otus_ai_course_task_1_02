@@ -1,0 +1,25 @@
+"""Domain models for the questionnaire application."""
+from typing import List
+from pydantic import BaseModel, Field
+
+
+class Question(BaseModel):
+    """A question in the questionnaire."""
+    
+    id: str = Field(..., description="Unique identifier for the question")
+    text: str = Field(..., description="The question text")
+    type: str = Field(..., description="Question type (text, multiple_choice, etc.)")
+    options: List[str] | None = Field(None, description="Options for multiple choice questions")
+
+
+class Answer(BaseModel):
+    """An answer to a question."""
+    
+    question_id: str = Field(..., description="ID of the question being answered")
+    answer: str = Field(..., description="The answer provided by the user")
+
+
+class AnswerSubmission(BaseModel):
+    """A submission containing multiple answers."""
+    
+    answers: List[Answer] = Field(..., description="List of answers")

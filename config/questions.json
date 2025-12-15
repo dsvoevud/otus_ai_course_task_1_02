@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What is your name?",
+      "type": "text",
+      "options": null
+    },
+    {
+      "id": "q2",
+      "text": "What is your favorite programming language?",
+      "type": "multiple_choice",
+      "options": ["Python", "JavaScript", "Java", "C#", "Go", "Rust", "Other"]
+    },
+    {
+      "id": "q3",
+      "text": "How many years of programming experience do you have?",
+      "type": "text",
+      "options": null
+    },
+    {
+      "id": "q4",
+      "text": "What is your preferred development environment?",
+      "type": "multiple_choice",
+      "options": ["VS Code", "PyCharm", "IntelliJ IDEA", "Vim/Neovim", "Sublime Text", "Other"]
+    },
+    {
+      "id": "q5",
+      "text": "What areas of development interest you the most?",
+      "type": "multiple_choice",
+      "options": ["Web Development", "Mobile Development", "Data Science", "DevOps", "Machine Learning", "Cloud Computing"]
+    }
+  ]
+}

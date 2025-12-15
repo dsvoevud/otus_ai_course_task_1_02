@@ -1,0 +1,32 @@
+"""Application services implementing business logic."""
+from typing import List
+from src.domain.models import Question, Answer
+from src.domain.repositories import QuestionRepository, AnswerRepository
+
+
+class QuestionService:
+    """Service for managing questions."""
+    
+    def __init__(self, repository: QuestionRepository):
+        self._repository = repository
+    
+    def get_questions(self) -> List[Question]:
+        """Get all available questions."""
+        return self._repository.get_all_questions()
+
+
+class AnswerService:
+    """Service for managing answers."""
+    
+    def __init__(self, repository: AnswerRepository):
+        self._repository = repository
+    
+    def submit_answers(self, answers: List[Answer]) -> None:
+        """Submit answers to the questionnaire."""
+        if not answers:
+            raise ValueError("Cannot submit empty answers")
+        self._repository.save_answers(answers)
+    
+    def get_all_answers(self) -> List[Answer]:
+        """Get all submitted answers."""
+        return self._repository.get_all_answers()
