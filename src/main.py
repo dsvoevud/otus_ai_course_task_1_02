@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.presentation.routes import router, set_services
 from src.application.services import QuestionService, AnswerService
-from src.infrastructure.repositories import JsonQuestionRepository, InMemoryAnswerRepository
+from src.infrastructure.repositories import JsonQuestionRepository, JsonAnswerRepository
 
 
 def create_app() -> FastAPI:
@@ -28,7 +28,7 @@ def create_app() -> FastAPI:
     
     # Initialize repositories
     question_repo = JsonQuestionRepository()
-    answer_repo = InMemoryAnswerRepository()
+    answer_repo = JsonAnswerRepository()
     
     # Initialize services
     question_service = QuestionService(question_repo)

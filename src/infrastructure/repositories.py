@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 from typing import List
+from datetime import datetime
 from src.domain.models import Question, Answer
 from src.domain.repositories import QuestionRepository, AnswerRepository
 
@@ -21,6 +22,40 @@ class JsonQuestionRepository(QuestionRepository):
             data = json.load(f)
         
         return [Question(**q) for q in data.get("questions", [])]
+
+
+class JsonAnswerRepository(AnswerRepository):
+    """Repository that stores answers in JSON files."""
+    
+    def __init__(self, storage_dir: str = "answers"):
+        self._storage_dir = Path(storage_dir)
+        self._storage_dir.mkdir(exist_ok=True)
+        self._count_file = self._storage_dir / "count.txt"
+        if self._count_file.exists():
+            with open(self._count_file, "r") as f:
+                self._count = int(f.read().strip())
+        else:
+            self._count = 0
+    
+    def save_answers(self, answers: List[Answer]) -> None:
+        """Store answers in a new JSON file."""
+        self._count += 1
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"Answers_{self._count}_{timestamp}.json"
+        filepath = self._storage_dir / filename
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump([answer.model_dump() for answer in answers], f, indent=2, ensure_ascii=False)
+        with open(self._count_file, "w") as f:
+            f.write(str(self._count))
+    
+    def get_all_answers(self) -> List[Answer]:
+        """Retrieve all stored answers from JSON files."""
+        all_answers = []
+        for file in self._storage_dir.glob("Answers_*.json"):
+            with open(file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                all_answers.extend([Answer(**a) for a in data])
+        return all_answers
 
 
 class InMemoryAnswerRepository(AnswerRepository):

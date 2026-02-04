@@ -7,7 +7,7 @@ A simple questionnaire API built with FastAPI, following clean architecture prin
 - **Clean Architecture**: Organized into domain, application, infrastructure, and presentation layers
 - **FastAPI**: Modern, fast web framework with automatic OpenAPI documentation
 - **Swagger UI**: Interactive API documentation at `/docs`
-- **In-Memory Storage**: Answers are stored in memory (reset on restart)
+- **JSON File Storage**: Answers are stored in JSON files in the 'answers' directory (persistent across restarts)
 - **JSON Configuration**: Questions loaded from `config/questions.json`
 - **Type Safety**: Full type hints with Pydantic models
 
@@ -66,7 +66,7 @@ Type `Y` to confirm. This is a one-time setup that allows running npm scripts.
 1. **Install uv** (if not already installed):
 ```powershell
 # Windows
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 2. **Install dependencies**:
@@ -135,7 +135,7 @@ curl http://localhost:8000/api/v1/questions
 ```
 
 #### 2. POST /api/v1/answers
-Submit answers to the questionnaire. Answers are stored in memory.
+Submit answers to the questionnaire. Answers are stored in JSON files.
 
 **Example Request:**
 ```bash
@@ -234,7 +234,7 @@ Question types:
 
 ## Notes
 
-- Answers are stored **in memory only** and will be lost when the server restarts
+- Answers are stored in JSON files in the 'answers' directory and persist across server restarts
 - The application uses CORS middleware to allow cross-origin requests
 - All endpoints are prefixed with `/api/v1` for versioning
 - Health check endpoints available at `/` and `/health`
